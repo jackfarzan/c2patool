@@ -173,5 +173,5 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: target/${{ matrix.artifact_name }}
         asset_name: ${{ matrix.artifact_name }}
-#        tag: ${{ needs.repo-prep.outputs.new-tag }}
+        tag: test
         overwrite: true
