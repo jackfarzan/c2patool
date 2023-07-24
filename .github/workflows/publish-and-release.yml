@@ -132,7 +132,7 @@ jobs:
   publish-binaries:
     name: Publish c2patool binaries
     runs-on: ${{ matrix.os }}
-    needs: repo-prep
+ #   needs: repo-prep
 
     strategy:
       fail-fast: false
