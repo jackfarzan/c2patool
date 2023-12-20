@@ -14,6 +14,8 @@ jobs:
       new-tag: v0.0.0-test
 
     steps:
+    - name: echo
+      run: hi
     # - name: Checkout
     #   uses: actions/checkout@v3
     #   with:
@@ -137,7 +139,7 @@ jobs:
         - os: windows-latest
           artifact_name: c2patool_win_intel-${{ needs.repo-prep.outputs.new-tag }}.zip
 
-    # steps:
+    steps:
     # - name: Checkout repository
     #   uses: actions/checkout@v3
     #   with:
@@ -152,8 +154,8 @@ jobs:
     # - name: Cache Rust dependencies
     #   uses: Swatinem/rust-cache@v2
 
-    # - name: Run make release
-    #   run: make release
+    - name: echo
+      run: echo ${{ matrix.artifact_name }}
 
     # - name: Upload binary to GitHub
     #   uses: svenstaro/upload-release-action@v1-release
