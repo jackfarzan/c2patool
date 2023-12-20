@@ -11,66 +11,66 @@ jobs:
 
     outputs:
       commit-hash: ${{ steps.commit.outputs.commit_hash }}
-      new-tag: ${{ steps.set-version.outputs.version_tag }}
+      new-tag: v0.0.0-test
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        token: ${{ secrets.GH_ADMIN_COMMIT_TOKEN }}
+    # steps:
+    # - name: Checkout
+    #   uses: actions/checkout@v3
+    #   with:
+    #     fetch-depth: 0
+    #     token: ${{ secrets.GH_ADMIN_COMMIT_TOKEN }}
 
-    - name: Get latest existing tag
-      uses: WyriHaximus/github-action-get-previous-tag@v1
-      id: get-latest-tag
+    # - name: Get latest existing tag
+    #   uses: WyriHaximus/github-action-get-previous-tag@v1
+    #   id: get-latest-tag
 
-    - name: Set new version
-      uses: paulhatch/semantic-version@v5.2.1
-      id: set-version
-      with:
-        tag_prefix: "v"
-        version_format: "${major}.${minor}.${patch}"
-        major_pattern: "(MAJOR)"
-        minor_pattern: "(MINOR)"
+    # - name: Set new version
+    #   uses: paulhatch/semantic-version@v5.2.1
+    #   id: set-version
+    #   with:
+    #     tag_prefix: "v"
+    #     version_format: "${major}.${minor}.${patch}"
+    #     major_pattern: "(MAJOR)"
+    #     minor_pattern: "(MINOR)"
 
-    - name: Generate changelog since last tag
-      id: generate-changelog
-      run: |
-        {
-          echo 'changelog<<EOF'
-          git log --format="* %s" ${{ steps.get-latest-tag.outputs.tag }}..HEAD | { grep -v "(IGNORE)" || :; }
-          echo EOF
-        } >> "$GITHUB_OUTPUT"
+    # - name: Generate changelog since last tag
+    #   id: generate-changelog
+    #   run: |
+    #     {
+    #       echo 'changelog<<EOF'
+    #       git log --format="* %s" ${{ steps.get-latest-tag.outputs.tag }}..HEAD | { grep -v "(IGNORE)" || :; }
+    #       echo EOF
+    #     } >> "$GITHUB_OUTPUT"
 
-    - name: Log version & changelog
-      run: |
-        echo "Version: $VERSION"
-        echo "Version tag: $VERSION_TAG"
-        echo "Latest tag detected: $LATEST_TAG"
-        echo "Changelog: $CHANGELOG"
-      env:
-        VERSION: ${{ steps.set-version.outputs.version }}
-        VERSION_TAG: ${{ steps.set-version.outputs.version_tag }}
-        LATEST_TAG: ${{ steps.get-latest-tag.outputs.tag }}
-        CHANGELOG: ${{ steps.generate-changelog.outputs.changelog }}
+    # - name: Log version & changelog
+    #   run: |
+    #     echo "Version: $VERSION"
+    #     echo "Version tag: $VERSION_TAG"
+    #     echo "Latest tag detected: $LATEST_TAG"
+    #     echo "Changelog: $CHANGELOG"
+    #   env:
+    #     VERSION: ${{ steps.set-version.outputs.version }}
+    #     VERSION_TAG: ${{ steps.set-version.outputs.version_tag }}
+    #     LATEST_TAG: ${{ steps.get-latest-tag.outputs.tag }}
+    #     CHANGELOG: ${{ steps.generate-changelog.outputs.changelog }}
 
-    - name: Prevent empty release
-      if: ${{ steps.generate-changelog.outputs.changelog == '' }}
-      uses: actions/github-script@v3
-      with:
-        script: |
-          core.setFailed("No changes since prior release")
+    # - name: Prevent empty release
+    #   if: ${{ steps.generate-changelog.outputs.changelog == '' }}
+    #   uses: actions/github-script@v3
+    #   with:
+    #     script: |
+    #       core.setFailed("No changes since prior release")
 
-    - name: Update changelog
-      run: |
-        (head -8 CHANGELOG.md && echo "## $VERSION" && date "+_%d %B %Y_" && echo "" && (echo "$CHANGELOG" | sed -E 's_\(#([0-9]+)\)_([#\1](https://github.com/contentauth/c2pa-rs/pull/\1)\)_') && tail -n +9 CHANGELOG.md) > CHANGELOG.new.md
-        mv CHANGELOG.new.md CHANGELOG.md
-      env:
-        VERSION: ${{ steps.set-version.outputs.version }}
-        CHANGELOG: ${{ steps.generate-changelog.outputs.changelog }}
+    # - name: Update changelog
+    #   run: |
+    #     (head -8 CHANGELOG.md && echo "## $VERSION" && date "+_%d %B %Y_" && echo "" && (echo "$CHANGELOG" | sed -E 's_\(#([0-9]+)\)_([#\1](https://github.com/contentauth/c2pa-rs/pull/\1)\)_') && tail -n +9 CHANGELOG.md) > CHANGELOG.new.md
+    #     mv CHANGELOG.new.md CHANGELOG.md
+    #   env:
+    #     VERSION: ${{ steps.set-version.outputs.version }}
+    #     CHANGELOG: ${{ steps.generate-changelog.outputs.changelog }}
 
-    - name: Install Rust toolchain
-      uses: dtolnay/rust-toolchain@stable
+    # - name: Install Rust toolchain
+    #   uses: dtolnay/rust-toolchain@stable
 
     # - name: Bump crate versions
     #   run: |
@@ -82,16 +82,16 @@ jobs:
     #   run: |
     #     cargo update -p c2patool
 
-    - name: Report differences for "prepare (release)" commit
-      run: git diff
+    # - name: Report differences for "prepare (release)" commit
+    #   run: git diff
 
-    - name: Commit Cargo.toml, Cargo.lock, and changelog
-      uses: stefanzweifel/git-auto-commit-action@v4
-      id: commit
-      with:
-        commit_message: Prepare ${{ steps.set-version.outputs.version }} release
-        commit_user_name: Adobe CAI Team
-        commit_user_email: noreply@adobe.com
+    # - name: Commit Cargo.toml, Cargo.lock, and changelog
+    #   uses: stefanzweifel/git-auto-commit-action@v4
+    #   id: commit
+    #   with:
+    #     commit_message: Prepare ${{ steps.set-version.outputs.version }} release
+    #     commit_user_name: Adobe CAI Team
+    #     commit_user_email: noreply@adobe.com
 
     - name: Create GitHub release
       uses: ncipollo/release-action@v1
