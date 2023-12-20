@@ -10,7 +10,7 @@ jobs:
     concurrency: publish-mutex
 
     outputs:
-      commit-hash: ${{ steps.commit.outputs.commit_hash }}
+    #  commit-hash: ${{ steps.commit.outputs.commit_hash }}
       new-tag: v0.0.0-test
 
     steps:
@@ -93,14 +93,14 @@ jobs:
     #     commit_user_name: Adobe CAI Team
     #     commit_user_email: noreply@adobe.com
 
-    - name: Create GitHub release
-      uses: ncipollo/release-action@v1
-      with:
-        body: ${{ steps.generate-changelog.outputs.changelog }}
-        commit: ${{ steps.commit.outputs.commit_hash }}
-        prerelease: true # remove at 1.0
-        tag: ${{ steps.set-version.outputs.version_tag }}
-        token: ${{ secrets.GH_ADMIN_COMMIT_TOKEN }}
+    # - name: Create GitHub release
+    #   uses: ncipollo/release-action@v1
+    #   with:
+    #     body: ${{ steps.generate-changelog.outputs.changelog }}
+    #     commit: ${{ steps.commit.outputs.commit_hash }}
+    #     prerelease: true # remove at 1.0
+    #     tag: ${{ steps.set-version.outputs.version_tag }}
+    #     token: ${{ secrets.GH_ADMIN_COMMIT_TOKEN }}
 
   # release-crate:
   #   name: Release c2patool Rust crate
@@ -137,29 +137,29 @@ jobs:
         - os: windows-latest
           artifact_name: c2patool_win_intel-${{ needs.repo-prep.outputs.new-tag }}.zip
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ needs.repo-prep.outputs.commit-hash }}
+    # steps:
+    # - name: Checkout repository
+    #   uses: actions/checkout@v3
+    #   with:
+    #     ref: ${{ needs.repo-prep.outputs.commit-hash }}
 
-    - name: Install Rust toolchain
-      uses: dtolnay/rust-toolchain@master
-      with:
-        toolchain: ${{ matrix.rust_version }}
-        components: llvm-tools-preview
+    # - name: Install Rust toolchain
+    #   uses: dtolnay/rust-toolchain@master
+    #   with:
+    #     toolchain: ${{ matrix.rust_version }}
+    #     components: llvm-tools-preview
 
-    - name: Cache Rust dependencies
-      uses: Swatinem/rust-cache@v2
+    # - name: Cache Rust dependencies
+    #   uses: Swatinem/rust-cache@v2
 
-    - name: Run make release
-      run: make release
+    # - name: Run make release
+    #   run: make release
 
-    - name: Upload binary to GitHub
-      uses: svenstaro/upload-release-action@v1-release
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/${{ matrix.artifact_name }}
-        asset_name: ${{ matrix.artifact_name }}
-        tag: ${{ needs.repo-prep.outputs.new-tag }}
-        overwrite: true
+    # - name: Upload binary to GitHub
+    #   uses: svenstaro/upload-release-action@v1-release
+    #   with:
+    #     repo_token: ${{ secrets.GITHUB_TOKEN }}
+    #     file: target/${{ matrix.artifact_name }}
+    #     asset_name: ${{ matrix.artifact_name }}
+    #     tag: ${{ needs.repo-prep.outputs.new-tag }}
+    #     overwrite: true
