@@ -158,7 +158,7 @@ jobs:
     #   uses: Swatinem/rust-cache@v2
 
     - name: echo
-      run: echo ${{ matrix.artifact_name }} | ${{ matrix.uploaded_asset_name }}
+      run: echo "${{ matrix.artifact_name }} | ${{ matrix.uploaded_asset_name }}"
 
     # - name: Upload binary to GitHub
     #   uses: svenstaro/upload-release-action@v1-release
